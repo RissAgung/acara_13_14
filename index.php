@@ -76,6 +76,7 @@ if (isset($_POST['submit_delete'])) {
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" href="index.php">Dashboard</a></li>
               <li><a class="dropdown-item" href="confirmAccount.php">Confirm Account</a></li>
+              <li><a class="dropdown-item" href="galery.php">Galery</a></li>
               <li><a class="dropdown-item" href="logout.php">Logout</a></li>
             </ul>
           </li>
@@ -104,7 +105,7 @@ if (isset($_POST['submit_delete'])) {
             </div>
             <div class="modal-body">
               <!-- ID Otomatis -->
-              <input type="hidden" class="form-control field-edit" id="id" value="<?= autoID() ?>" name="id">
+              <input type="hidden" class="form-control field-edit" id="id" value="<?= autoID("SELECT id FROM user_detail ORDER BY id DESC") ?>" name="id">
 
               <label for="email" class="form-label">User Email</label>
               <input type="email" class="form-control field-edit" id="email" email="exampleInputPassword1" name="email" required>

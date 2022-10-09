@@ -66,6 +66,7 @@ if (isset($_POST['submit_delete'])) {
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" href="index.php">Dashboard</a></li>
               <li><a class="dropdown-item" href="confirmAccount.php">Confirm Account</a></li>
+              <li><a class="dropdown-item" href="galery.php">Galery</a></li>
               <li><a class="dropdown-item" href="logout.php">Logout</a></li>
             </ul>
           </li>

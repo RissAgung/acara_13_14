@@ -1,5 +1,7 @@
 <?php
 
+use LDAP\Result;
+
 $conn = mysqli_connect("localhost", "root", "", "user");
 
 function userActive(){
@@ -13,6 +15,59 @@ function userActive(){
         $users[] = $user;
     }
     return $users;
+}
+
+function gambar(){
+  global $conn;
+
+  $users = [];
+
+  $result = mysqli_query($conn, "SELECT * FROM gambar");
+
+  while($user = mysqli_fetch_assoc($result)){
+      $users[] = $user;
+  }
+  return $users;
+}
+
+function upGambar($gambar, $lokasi){
+  global $conn;
+
+  $jumlahGambar = count($_FILES["foto"]["name"]);
+  $ekstensi = array('png', 'jpg', 'jpeg', 'gif');
+  $result = "";
+
+  for($i=0; $i<$jumlahGambar; $i++){
+    $id = autoIDGambar("SELECT * FROM gambar ORDER BY gambar_id DESC");
+
+    $namaFile = $_FILES["foto"]["name"][$i];
+    $tmpFile = $_FILES["foto"]["tmp_name"][$i];
+    $tipe_file = strtolower(pathinfo($namaFile, PATHINFO_EXTENSION));
+    $ukuranFile = $_FILES["foto"]["size"][$i];
+    $error = $_FILES["foto"]["error"];
+
+    $namaFileBaru = uniqid();
+    $namaFileBaru .= ".";
+    $namaFileBaru .= $tipe_file;
+
+    if(!in_array($tipe_file, $ekstensi)){
+      echo ("<scrip>
+        alert 'Extensi file salah';
+      </script>");
+      header("Location: $lokasi");
+    }else{
+      if($error === 4){
+        echo ("<scrip>
+          alert 'Anda tidak memilih file';
+        </script>");
+        header("Location: $lokasi");
+      }else{
+        mysqli_query($conn, "INSERT INTO gambar VALUES('$id', '$namaFileBaru')");
+        move_uploaded_file($tmpFile, 'gambar/' . $namaFileBaru);
+      }
+    }
+  }
+  return mysqli_affected_rows($conn);
 }
 
 function userNotActive(){
@@ -97,10 +152,10 @@ function update($data){
 
 }
 
-function autoID(){
+function autoID($query){
   global $conn;
 
-  $raw = mysqli_query($conn, "SELECT id FROM user_detail ORDER BY id DESC");
+  $raw = mysqli_query($conn, $query);
 
   $Result = mysqli_fetch_assoc($raw);
 
@@ -109,11 +164,22 @@ function autoID(){
   return $finalResult;
 }
 
+function autoIDGambar($query){
+  global $conn;
+
+  $raw = mysqli_query($conn, $query);
+
+  $Result = mysqli_fetch_assoc($raw);
+
+  $finalResult =  $Result["gambar_id"]+1;
+
+  return $finalResult;
+}
 function insert($data){
 
   global $conn;
 
-  $id = autoID();
+  $id = autoID("SELECT id FROM user_detail ORDER BY id DESC");
   $email = $data["email"];
   $password = $data["password"];
   $name = $data["name"];
@@ -161,7 +227,7 @@ class register{
 
   global $conn;
 
-  $id = autoID();
+  $id = autoID("SELECT id FROM user_detail ORDER BY id DESC");
   $email = $data["email"];
   $password = $data["password"];
   $name = $data["name"];
@@ -174,7 +240,7 @@ class register{
 
   return mysqli_affected_rows($conn);
 
-}
+  }
 }
 
 ?>

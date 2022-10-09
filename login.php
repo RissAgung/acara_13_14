@@ -5,7 +5,7 @@ require "function.php";
 
 $data = userActive();
 
-if (isset($_COOKIE["login"])) {
+if (isset($_COOKIE["login"])) {                                                
   if ($_COOKIE["login"] == "true") {
     $_SESSION["login"] = "true";
   }
